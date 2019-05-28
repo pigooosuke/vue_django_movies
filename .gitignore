@@ -1,0 +1,16 @@
+frontend/node_modules
+
+
+# python
+__pycache__
+.pyc
+
+# db
+*.sqlite3
+
+# ide
+.idea/
+.vscode/
+
+# env
+.env
