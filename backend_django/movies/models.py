@@ -13,7 +13,8 @@ class Genre(models.Model):
 
 
 class Movie(models.Model):
-    # 1::Toy Story (1995)::Animation|Children's|Comedy
+    # movieId,title,genres
+    # 1,Toy Story (1995),Adventure|Animation|Children|Comedy|Fantasy
     title = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -23,36 +24,35 @@ class Movie(models.Model):
         return self.title
 
 
-class Age(models.Model):
-    name = models.CharField(max_length=20)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.name
-
-
-class Occupation(models.Model):
-    name = models.CharField(max_length=40)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.name
-
-
 class User(models.Model):
-    # UserID::Gender::Age::Occupation::Zip-code
-    gender = models.SmallIntegerField()
-    age = models.OneToOneField(Age, on_delete=models.CASCADE)
-    occupation = models.OneToOneField(Occupation, on_delete=models.CASCADE)
-    zipcode = models.CharField(max_length=5)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
 
-class Rate(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    movie = models.OneToOneField(Movie, on_delete=models.CASCADE)
-    rating = models.PositiveIntegerField()
+class Tag(models.Model):
+    # userId,movieId,tag,timestamp
+    # 2,60756,funny,1445714994
+    name = models.CharField(max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    users = models.ManyToManyField(User, through="UserTag")
+    movies = models.ManyToManyField(Movie, through="UserTag")
+
+    def __str__(self):
+        return self.name
+
+
+class UserTag(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    timestamp = models.PositiveIntegerField()
+
+
+class Rating(models.Model):
+    # userId,movieId,rating,timestamp
+    # 1,1,4.0,964982703
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    rating = models.FloatField()
     timestamp = models.PositiveIntegerField()
