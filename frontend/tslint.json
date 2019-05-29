@@ -9,7 +9,9 @@
     ]
   },
   "rules": {
-    "quotemark": [true, "single"],
+    "quotemark": [true, "double"],
+    "trailing-comma": [true, {"multiline": "never", "singleline": "never"}],
+    "arrow-parens": false,
     "indent": [true, "spaces", 2],
     "interface-name": false,
     "ordered-imports": false,
