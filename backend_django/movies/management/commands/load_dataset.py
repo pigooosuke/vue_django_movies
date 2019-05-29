@@ -58,8 +58,8 @@ class Command(BaseCommand):
             'genres': list(chain.from_iterable(splited_genres.tolist()))
         })
 
-        for movie_id, movie_title in zip(df_movies["movieId"].values, df_movies["title"].values):
-            movie = Movie(id=movie_id, title=movie_title)
+        for movie_id, movie_name in zip(df_movies["movieId"].values, df_movies["title"].values):
+            movie = Movie(id=movie_id, name=movie_name)
             movies.append(movie)
         for movie_genre in df_movies_repeat["genres"].unique():
             genre = Genre(name=movie_genre)

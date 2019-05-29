@@ -15,13 +15,13 @@ class Genre(models.Model):
 class Movie(models.Model):
     # movieId,title,genres
     # 1,Toy Story (1995),Adventure|Animation|Children|Comedy|Fantasy
-    title = models.CharField(max_length=200)
+    name = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     genres = models.ManyToManyField(Genre)
 
     def __str__(self):
-        return self.title
+        return self.name
 
 
 class User(models.Model):

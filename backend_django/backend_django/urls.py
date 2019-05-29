@@ -16,9 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from movies.views import PrivateGraphQLView
 from graphene_django.views import GraphQLView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('graphql/', GraphQLView.as_view(graphiql=True)),
+    # prod login-required
+    path('graphql/', PrivateGraphQLView.as_view(graphiql=True)),
+    # dev
+    path('dev/graphql', GraphQLView.as_view(graphiql=True)),
 ]
