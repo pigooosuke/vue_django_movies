@@ -17,5 +17,5 @@ export interface KeyValue {
 export interface Movie {
   id: string;
   name: string;
-  genres :KeyValue[];
+  genres: KeyValue[];
 }

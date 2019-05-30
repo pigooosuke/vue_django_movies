@@ -11,12 +11,12 @@ export default new Router({
     {
       path: "/",
       name: "home",
-      redirect: { name: 'movies' },
+      redirect: { name: "movies" }
     },
     {
-      path: '/movies',
-      name: 'movies',
-      component: MovieListPage,
+      path: "/movies",
+      name: "movies",
+      component: MovieListPage
     }
   ]
 });
