@@ -2,6 +2,8 @@ import Vue from "vue";
 import VueApollo from "vue-apollo";
 import { createApolloClient } from "vue-cli-plugin-apollo/graphql-client";
 import { InMemoryCache } from "apollo-cache-inmemory";
+import { setContext } from "apollo-link-context";
+import Cookies from "js-cookie";
 
 // Install the vue plugin
 Vue.use(VueApollo);
@@ -10,7 +12,8 @@ Vue.use(VueApollo);
 const AUTH_TOKEN = "apollo-token";
 
 // Http endpoint
-const httpEndpoint = "/graphql";
+// const httpEndpoint = "/graphql";
+const httpEndpoint = "http://localhost:8000/dev/graphql";
 
 // Config
 const defaultOptions = {
@@ -33,6 +36,16 @@ const defaultOptions = {
   // note: don't override httpLink here, specify httpLink options in the
   // httpLinkOptions property of defaultOptions.
   // link: myLink
+  // Djangoのcsrftoken認証対応
+  link: setContext((_, { headers }) => {
+    return {
+      headers: {
+        ...headers,
+        "X-CSRFToken": Cookies.get("csrftoken"),
+        "X-Requested-With": "XMLHttpRequest"
+      }
+    };
+  }),
 
   // Override default cache
   // cache: myCache

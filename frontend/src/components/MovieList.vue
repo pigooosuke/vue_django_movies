@@ -36,8 +36,8 @@ export default class MovieList extends Vue {
   @Prop() loading!: boolean;
 
   @Emit()
-  clickMovie(channel: Movie) {
-    return channel;
+  clickMovie(movie: Movie) {
+    return movie;
   }
 }
 </script>

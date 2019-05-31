@@ -4,7 +4,7 @@
       <v-toolbar-title>Application</v-toolbar-title>
     </v-toolbar>
     <v-content>
-      <v-container fluid fill-height> </v-container>
+      <router-view />
     </v-content>
   </v-app>
 </template>
