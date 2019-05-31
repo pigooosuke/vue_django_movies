@@ -1,6 +1,5 @@
 import gql from "graphql-tag";
 
-
 export const ALL_MOVIES = gql`
   query allMovies {
     allMovies(first: 100) {

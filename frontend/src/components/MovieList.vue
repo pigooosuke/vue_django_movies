@@ -27,7 +27,10 @@ export default class MovieList extends Vue {
     form: HTMLFormElement;
   };
 
-  readonly headers = [{ text: "ID", value: "id", width: "30" }, { text: "名前", value: "name" }];
+  readonly headers = [
+    { text: "ID", value: "id", width: "30" },
+    { text: "名前", value: "name" }
+  ];
 
   @Prop() movies!: Movie[];
   @Prop() loading!: boolean;

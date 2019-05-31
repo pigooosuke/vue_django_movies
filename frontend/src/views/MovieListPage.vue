@@ -57,16 +57,13 @@ import { Component, Vue } from "vue-property-decorator";
 })
 export default class Movies extends Vue {
   // allMovies!: Movie[];
-
   // mounted() {
   //   // ページ遷移時に内容を確実に更新
   //   this.$apollo.queries.allMovies.refetch();
   // }
-
   // get loading(): boolean {
   //   return this.$apollo.queries.allMovies.loading;
   // }
-
   // openMovie(movie: Movie) {
   //   this.$router.push({ name: "movie", params: { movieId: movie.id } });
   // }
