@@ -24,7 +24,7 @@ class MovieNode(DjangoObjectType):
             'genres__name': ['exact'],
         }
         interfaces = (relay.Node, )
-    
+
     genres = graphene.List(graphene.NonNull(GenreNode), required=True)
 
     @staticmethod
