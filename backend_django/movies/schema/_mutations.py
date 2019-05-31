@@ -7,7 +7,5 @@ from . import model_mutations, queries
 LOGGER = logging.getLogger(__name__)
 
 
-
-
 class Mutation:
     pass

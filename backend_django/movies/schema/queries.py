@@ -2,17 +2,10 @@ import logging
 import graphene
 from graphene import relay
 from graphene_django import DjangoObjectType
-from django.contrib.auth import models as auth_models
 from graphene_django.filter import DjangoFilterConnectionField
 from movies.models import Genre, Movie, User, Tag, UserTag, Rating
 
 LOGGER = logging.getLogger(__name__)
-
-
-class UserNode(DjangoObjectType):
-    class Meta:
-        model = auth_models.User
-        exclude_fields = ('password')
 
 
 class GenreNode(DjangoObjectType):
@@ -31,52 +24,17 @@ class MovieNode(DjangoObjectType):
             'genres__name': ['exact'],
         }
         interfaces = (relay.Node, )
+    
+    genres = graphene.List(graphene.NonNull(GenreNode), required=True)
+
+    @staticmethod
+    def resolve_genres(movie, info):
+        return movie.genres.all()
 
 
 class Query(graphene.ObjectType):
     movie = relay.Node.Field(MovieNode)
-    all_movies = DjangoFilterConnectionField(MovieNode)
+    allMovies = DjangoFilterConnectionField(MovieNode)
 
     genre = relay.Node.Field(GenreNode)
-    all_genres = DjangoFilterConnectionField(GenreNode)
-
-
-"""
-query {
-    allMovies{
-        id,
-        name
-    }
-}
-
-query {
-    allMovies{
-        id,
-        name,
-        genres {
-            id,
-            name
-        }
-    }
-}
-
-query {
-    allGenres {
-        edges {
-            node {
-                name
-            }
-        }
-    }
-}
-
-query {
-    allMovies(name_Icontains: "to") {
-        edges {
-            node {
-                name
-            }
-        }
-    }
-}
-"""
+    allGenres = DjangoFilterConnectionField(GenreNode)
