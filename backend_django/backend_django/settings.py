@@ -21,11 +21,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '#*w*=pp^4yszreu%%_=tbqjsxzc(hhzdyxrxsogj^=5qycf#3$'
+#  '7c2c5d55400a93198a8ed1a9ad1b669a0c00cad5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -38,10 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'graphene_django',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'corsheaders',
     'movies',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -122,7 +127,25 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
+# rest framework
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAdminUser',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+}
+
+
 # GraphQL
 GRAPHENE = {
     'SCHEMA': 'movies.schema.schema'
 }
+
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:8081',
+]
+# CORS origin
+CORS_ORIGIN_ALLOW_ALL = True

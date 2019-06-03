@@ -41,11 +41,11 @@ const defaultOptions = {
     return {
       headers: {
         ...headers,
-        "X-CSRFToken": Cookies.get("csrftoken"),
-        "X-Requested-With": "XMLHttpRequest"
-      }
+        "X-CSRFToken": Cookies.get("csrftoken")
+      },
     };
   }),
+  
 
   // Override default cache
   // cache: myCache
