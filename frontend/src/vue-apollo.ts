@@ -12,8 +12,7 @@ Vue.use(VueApollo);
 const AUTH_TOKEN = "apollo-token";
 
 // Http endpoint
-// const httpEndpoint = "/graphql";
-const httpEndpoint = "http://localhost:8000/dev/graphql";
+const httpEndpoint = "/dev/graphql";
 
 // Config
 const defaultOptions = {
@@ -42,10 +41,9 @@ const defaultOptions = {
       headers: {
         ...headers,
         "X-CSRFToken": Cookies.get("csrftoken")
-      },
+      }
     };
   }),
-  
 
   // Override default cache
   // cache: myCache
