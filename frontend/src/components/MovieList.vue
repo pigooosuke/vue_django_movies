@@ -1,20 +1,19 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="movies"
-    :loading="loading"
-    no-data-text="なし"
-    class="elevation-1"
-    hide-actions
-    disable-initial-sort
-  >
-    <template v-slot:items="props">
-      <tr span @click="clickMovie(props.item)">
-        <td>{{ props.item.id }}</td>
-        <td class="text-sm-left text-wrap">{{ props.item.name }}</td>
-      </tr>
-    </template>
-  </v-data-table>
+  <v-layout wrap justify-space-around>
+    <v-flex v-for="movie in movies" :key="movie.id">
+      <v-card color="gray" dark width="220px">
+        <v-card-text>{{ movie.name }}</v-card-text>
+        <v-responsive height="220px"></v-responsive>
+        <v-card-actions>
+          <div id="chip-usage-example" class="text-xs-center">
+            <v-chip v-for="genre in movie.genres" :key="genre.id">
+              {{ genre.name }}
+            </v-chip>
+          </div>
+        </v-card-actions>
+      </v-card>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script lang="ts">
@@ -26,11 +25,6 @@ export default class MovieList extends Vue {
   $refs!: {
     form: HTMLFormElement;
   };
-
-  readonly headers = [
-    { text: "ID", value: "id", width: "30" },
-    { text: "名前", value: "name" }
-  ];
 
   @Prop() movies!: Movie[];
   @Prop() loading!: boolean;

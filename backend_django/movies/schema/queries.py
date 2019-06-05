@@ -15,6 +15,12 @@ class GenreNode(DjangoObjectType):
         interfaces = (relay.Node, )
 
 
+class RatingNode(DjangoObjectType):
+    class Meta:
+        model = Rating
+        interfaces = (relay.Node, )
+
+
 class MovieNode(DjangoObjectType):
     class Meta:
         model = Movie

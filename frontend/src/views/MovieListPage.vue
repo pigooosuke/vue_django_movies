@@ -1,17 +1,6 @@
 <template>
-  <v-container class="movie_list grid-list-xl">
+  <v-container class="movie_list grid-list-xl" fluid>
     <v-layout wrap>
-      <v-flex xs12>
-        <v-card dark color="indigo lighten-2">
-          <v-card-title primary-title>
-            <h1 class="mr-4">Hot Tips</h1>
-            <div>
-              それぞれ設定してください。
-            </div>
-          </v-card-title>
-        </v-card>
-      </v-flex>
-
       <v-flex>
         <MovieList
           :movies="allMovies"
@@ -50,7 +39,6 @@ import { allMovies_allMovies, allMovies } from "@/graphql/types/allMovies";
 export default class Movies extends Vue {
   allMovies!: Movie[];
   mounted() {
-    // ページ遷移時に内容を確実に更新
     this.$apollo.queries.allMovies.refetch();
   }
   get loading(): boolean {
