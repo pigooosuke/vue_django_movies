@@ -1,9 +1,9 @@
 ### movie lens viewer
 
 - Frontend
- - Vue.js(typescript)
- - Vuetify
+  - Vue.js(typescript)
+  - Vuetify
 - Backend
- - Django
- - GraphQL
- - SQLite
+  - Django
+  - GraphQL
+  - SQLite
