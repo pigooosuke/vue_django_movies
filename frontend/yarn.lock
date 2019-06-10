@@ -12112,7 +12112,7 @@ vscode-uri@^1.0.6:
   resolved "https://registry.yarnpkg.com/vscode-uri/-/vscode-uri-1.0.8.tgz#9769aaececae4026fb6e22359cb38946580ded59"
   integrity sha512-obtSWTlbJ+a+TFRYGaUumtVwb+InIUVI0Lu0VBUAPmj2cU5JutEXg3xUE0c2J5Tcy7h2DEKVJBFi+Y9ZSFzzPQ==
 
-vue-apollo@^3.0.0-beta.11:
+vue-apollo@3.0.0-beta.30:
   version "3.0.0-beta.30"
   resolved "https://registry.yarnpkg.com/vue-apollo/-/vue-apollo-3.0.0-beta.30.tgz#081bc2b8c8f9d2ffd508675c17dc1017da5ba3f4"
   integrity sha512-uRv5JXGXCxMVyfThBtqeJVwHd7+XI/RmGjZY5kU6Ad8MGT6Da9M8T2wRmcvN4fa4fydRJuy4PheSEXS83WFUhg==
