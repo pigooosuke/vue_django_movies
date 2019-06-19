@@ -23,3 +23,10 @@ __pycache__
 
 # files
 *.log
+
+# django statics
+backend/static/js
+backend/static/css
+backend/static/img
+backend/static/favicon.ico
+backend/templates/*.html
