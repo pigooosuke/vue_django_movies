@@ -2,9 +2,7 @@ from django.core.management.base import BaseCommand
 
 from ...models import Genre, Movie, User, Tag, UserTag, Rating
 
-import pandas as pd
-import numpy as np
-from itertools import chain
+import csv
 import pathlib
 import urllib.request
 import zipfile
@@ -43,78 +41,111 @@ class Command(BaseCommand):
             print("Done.")
 
     def handle(self, *args, **options):
-        self.download(self.movielens_url, self.movielens_filename, self.download_dir)
+        self.download(
+            self.movielens_url,
+            self.movielens_filename,
+            self.download_dir)
         movies_csv = self.download_dir / self.movielens_extracted_folder / "movies.csv"
         ratings_csv = self.download_dir / self.movielens_extracted_folder / "ratings.csv"
         tags_csv = self.download_dir / self.movielens_extracted_folder / "tags.csv"
+        links_csv = self.download_dir / self.movielens_extracted_folder / "links.csv"
 
         # load movies, genres
+        movie_title_dict = dict()
+        movie_genre_dict = dict()
+        movie_imdb_dict = dict()
+        movie_tmdb_dict = dict()
+        genre_dict = dict()
+        with open(str(movies_csv)) as f:
+            next(f)
+            contents = csv.reader(f, delimiter=",", quotechar='"')
+            for content in contents:
+                movie_id, title, genres = content
+                splited_genres = genres.split("|")
+                for genre in splited_genres:
+                    if genre not in genre_dict:
+                        genre_dict[genre] = len(genre_dict) + 1
+                # set dict
+                movie_title_dict[movie_id] = title
+                genre_id_list = [genre_dict[genre] for genre in splited_genres]
+                movie_genre_dict[movie_id] = genre_id_list
+
+        with open(str(links_csv)) as f:
+            next(f)
+            contents = csv.reader(f, delimiter=",", quotechar='"')
+            for content in contents:
+                movie_id, imdb_id, tmdb_id = content
+                movie_imdb_dict[movie_id] = imdb_id
+                movie_tmdb_dict[movie_id] = tmdb_id
+
+        # set model data
         movies = list()
         genres = list()
-        df_movies = pd.read_csv(str(movies_csv))
-        splited_genres = df_movies['genres'].str.split('|')
-        df_movies_repeat = pd.DataFrame({
-            'movieId': df_movies['movieId'].values.repeat(splited_genres.str.len()),
-            'genres': list(chain.from_iterable(splited_genres.tolist()))
-        })
-
-        for movie_id, movie_name in zip(df_movies["movieId"].values, df_movies["title"].values):
-            movie = Movie(id=movie_id, name=movie_name)
+        for movie_id in movie_title_dict:
+            movie = Movie(
+                id=movie_id,
+                name=movie_title_dict[movie_id],
+                imdb_id=movie_imdb_dict[movie_id],
+                tmdb_id=movie_tmdb_dict[movie_id])
             movies.append(movie)
-        for movie_genre in df_movies_repeat["genres"].unique():
+        for movie_genre in genre_dict:
             genre = Genre(name=movie_genre)
             genres.append(genre)
         # bulk create movie/genre
         Movie.objects.bulk_create(movies)
         Genre.objects.bulk_create(genres)
 
-        genre_labels, _ = pd.factorize(df_movies_repeat["genres"])
-
         Through = Movie.genres.through
-        through_list = []
-        for l, g in zip(df_movies_repeat["movieId"].values, genre_labels):
-            through_list.append(Through(movie_id=l, genre_id=g+1))
+        throughs = list()
+        for movie_id, genre_ids in movie_genre_dict.items():
+            for genre_id in genre_ids:
+                through = Through(movie_id=movie_id, genre_id=genre_id)
+                throughs.append(through)
         # bulk create movie-genre relation
-        Through.objects.bulk_create(through_list)
+        Through.objects.bulk_create(throughs)
 
-        # load ratings, tags
-        df_ratings = pd.read_csv(str(ratings_csv))
-        df_tags = pd.read_csv(str(tags_csv))
+        # load ratings
+        user_ids = set()
+        ratings = list()
+        with open(str(ratings_csv)) as f:
+            next(f)
+            contents = csv.reader(f, delimiter=",", quotechar='"')
+            for content in contents:
+                user_id, movie_id, rating, timestamp = content
+                rating = Rating(user_id=user_id, movie_id=movie_id,
+                                rating=rating, timestamp=timestamp)
+                ratings.append(rating)
+                user_ids.add(user_id)
+
+        # load tags
+        tags = list()
+        user_tags = list()
+        tag_dict = dict()
+        with open(str(tags_csv)) as f:
+            next(f)
+            contents = csv.reader(f, delimiter=",", quotechar='"')
+            for content in contents:
+                user_id, movie_id, tag_name, timestamp = content
+                if tag_name not in tag_dict:
+                    tag_dict[tag_name] = len(tag_dict) + 1
+                tag = Tag(name=tag_name)
+                tags.append(tag)
+                user_tags.append(
+                    UserTag(
+                        user_id=user_id,
+                        tag_id=tag_dict[tag_name],
+                        movie_id=movie_id,
+                        timestamp=timestamp))
+                user_ids.add(user_id)
         # user
         users = list()
-        user_ids = np.unique(np.concatenate(
-            (df_ratings["userId"].unique(), df_tags["userId"].unique()), 0))
         for user_id in user_ids:
             user = User(id=user_id)
             users.append(user)
         # bulk create user
         User.objects.bulk_create(users)
-
-        # ratings
-        ratings = list()
-        for user_id, movie_id, rating, timestamp in zip(df_ratings["userId"].values, df_ratings["movieId"].values, df_ratings["rating"].values, df_ratings["timestamp"].values):
-            rating = Rating(user_id=user_id, movie_id=movie_id,
-                            rating=rating, timestamp=timestamp)
-            ratings.append(rating)
-        # bulk create ratings
         Rating.objects.bulk_create(ratings)
-
-        # tags
-        tags = list()
-        for tag_name in df_tags["tag"].unique():
-            tag = Tag(name=tag_name)
-            tags.append(tag)
-        # bulk create tag
         Tag.objects.bulk_create(tags)
-
-        tag_labels, _ = pd.factorize(df_tags["tag"])
-
-        # user-tags
-        usertags = []
-        for user_id, movie_id, tag_id, timestamp in zip(df_tags["userId"].values, df_tags["movieId"].values, tag_labels, df_tags["timestamp"].values):
-            usertags.append(UserTag(user_id=user_id, tag_id=tag_id+1,
-                                    movie_id=movie_id, timestamp=timestamp))
-        # bulk create movie-genre relation
-        UserTag.objects.bulk_create(usertags)
+        UserTag.objects.bulk_create(user_tags)
 
         print("command finished")

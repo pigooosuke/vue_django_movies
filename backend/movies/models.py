@@ -13,9 +13,9 @@ class Genre(models.Model):
 
 
 class Movie(models.Model):
-    # movieId,title,genres
-    # 1,Toy Story (1995),Adventure|Animation|Children|Comedy|Fantasy
     name = models.CharField(max_length=200)
+    imdb_id = models.CharField(max_length=10)
+    tmdb_id = models.CharField(max_length=10)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     genres = models.ManyToManyField(Genre)
@@ -30,8 +30,6 @@ class User(models.Model):
 
 
 class Tag(models.Model):
-    # userId,movieId,tag,timestamp
-    # 2,60756,funny,1445714994
     name = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
